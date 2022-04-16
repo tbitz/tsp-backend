@@ -41,12 +41,12 @@ router.put("/like/:id", [validateObjectId, auth], async (req, res) => {
   if (!task) return res.status(400).send({ message: "task does not exist" });
 
   const user = await User.findById(req.user._id);
-  const index = user.likedTasks.indexOf(task._id);
+  const index = user.urgentTasks.indexOf(task._id);
   if (index === -1) {
-    user.likedTasks.push(task._id);
+    user.urgentTasks.push(task._id);
     resMessage = "Added to your liked tasks";
   } else {
-    user.likedTasks.splice(index, 1);
+    user.urgentTasks.splice(index, 1);
     resMessage = "Removed from your liked tasks";
   }
 
@@ -57,7 +57,7 @@ router.put("/like/:id", [validateObjectId, auth], async (req, res) => {
 // Get liked tasks
 router.get("/like", auth, async (req, res) => {
   const user = await User.findById(req.user._id);
-  const tasks = await Task.find({ _id: user.likedTasks });
+  const tasks = await Task.find({ _id: user.urgentTasks });
   res.status(200).send({ data: tasks });
 });
 

@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   month: { type: String, required: true },
   date: { type: String, required: true },
   year: { type: String, required: true },
-  likedTasks: { type: [String], default: [] },
+  urgentTasks: { type: [String], default: [] },
   projects: { type: [String], default: [] },
   isAdmin: { type: Boolean, default: false },
 });
