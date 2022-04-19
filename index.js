@@ -7,6 +7,7 @@ const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const taskRoutes = require("./routes/tasks");
 const projectRoutes = require("./routes/projects");
+const boardRoutes = require("./routes/boards");
 const stepRoutes = require("./routes/steps");
 const searchRoutes = require("./routes/search");
 const app = express();
@@ -19,6 +20,7 @@ app.use("/api/users/", userRoutes);
 app.use("/api/login/", authRoutes);
 app.use("/api/tasks/", taskRoutes);
 app.use("/api/projects/", projectRoutes);
+app.use("/api/boards/", boardRoutes);
 app.use("/api/steps/", stepRoutes);
 app.use("/api/", searchRoutes);
 
