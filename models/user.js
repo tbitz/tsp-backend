@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   year: { type: String, required: true },
   urgentTasks: { type: [String], default: [] },
   projects: { type: [String], default: [] },
+  tasks: { type: [String], default: [] },
   isAdmin: { type: Boolean, default: false },
 });
 

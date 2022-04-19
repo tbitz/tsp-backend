@@ -1,21 +1,27 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 const taskSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  artist: { type: String, required: true },
-  task: { type: String, required: true },
-  img: { type: String, required: true },
-  duration: { type: String, required: true },
+  user: { type: ObjectId, ref: "user", required: true },
+  columnId: { type: String, required: true },
+  title: { type: String, required: true },
+  priority: { type: String, enum: ["H", "M", "L"], required: true },
+  description: { type: String, required: false },
+  labels: { type: [String], default: [] },
+  assignees: { type: [String], default: [] },
 });
 
 const validate = (task) => {
   const schema = Joi.object({
-    name: Joi.string().required(),
-    artist: Joi.string().required(),
-    task: Joi.string().required(),
-    img: Joi.string().required(),
-    duration: Joi.number().required(),
+    user: Joi.string().required(),
+    columnId: Joi.string().required(),
+    title: Joi.string().required(),
+    priority: Joi.string().required(),
+    description: Joi.string().allow(""),
+    labels: Joi.array().items(Joi.string()),
+    assignees: Joi.array().items(Joi.string().optional()),
   });
   return schema.validate(task);
 };

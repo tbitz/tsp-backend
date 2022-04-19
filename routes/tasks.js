@@ -6,11 +6,15 @@ const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
 
 // Create task
-router.post("/", admin, async (req, res) => {
+router.post("/", auth, async (req, res) => {
+  console.log("create task", req.body);
   const { error } = validate(req.body);
   if (error) res.status(400).send({ message: error.details[0].message });
 
-  const task = await Task(req.body).save();
+  const user = await User.findById(req.user._id);
+  const task = await Task({ ...req.body, user: user._id }).save();
+
+  // const task = await Task(req.body).save();
   res.status(201).send({ data: task, message: "Task created successfully" });
 });
 
