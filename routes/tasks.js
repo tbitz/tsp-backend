@@ -25,15 +25,27 @@ router.get("/", async (req, res) => {
 });
 
 // Update task
-router.put("/:id", [validateObjectId, admin], async (req, res) => {
+router.put("/:id", [validateObjectId, auth], async (req, res) => {
+  console.log("task update running");
+
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
   res.send({ data: task, message: "Updated task successfully" });
 });
 
+// Update task
+router.patch("/:id", [validateObjectId, auth], async (req, res) => {
+  console.log("task patch running");
+  const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.send({ data: task, message: "Patched task successfully" });
+});
+
+
 // Delete task by ID
-router.delete("/:id", [validateObjectId, admin], async (req, res) => {
+router.delete("/:id", [validateObjectId, auth], async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
   res.status(200).send({ message: "Task deleted sucessfully" });
 });
