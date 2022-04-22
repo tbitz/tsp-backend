@@ -23,7 +23,7 @@ router.post("/", auth, async (req, res) => {
 router.put("/edit/:id", [validateObjectId, auth], async (req, res) => {
   const schema = Joi.object({
     name: Joi.string().required(),
-    desc: Joi.string().allow(""),
+    description: Joi.string().allow(""),
     img: Joi.string().allow(""),
   });
   const { error } = schema.validate(req.body);
@@ -37,7 +37,7 @@ router.put("/edit/:id", [validateObjectId, auth], async (req, res) => {
     return res.status(403).send({ message: "User don't have access to edit!" });
 
   project.name = req.body.name;
-  project.desc = req.body.desc;
+  project.description = req.body.description;
   project.img = req.body.img;
   await project.save();
 

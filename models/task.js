@@ -6,6 +6,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const taskSchema = new mongoose.Schema({
   user: { type: ObjectId, ref: "user", required: true },
   columnId: { type: String, required: true },
+  projectId: { type: String, required: true },
+  stepId: { type: String, required: true },
   title: { type: String, required: true },
   priority: { type: String, enum: ["H", "M", "L"], required: true },
   description: { type: String, required: false },
@@ -17,6 +19,8 @@ const validate = (task) => {
   const schema = Joi.object({
     user: Joi.string().required(),
     columnId: Joi.string().required(),
+    projectId: Joi.string().required(),
+    stepId: Joi.string().required(),
     title: Joi.string().required(),
     priority: Joi.string().required(),
     description: Joi.string().allow(""),
