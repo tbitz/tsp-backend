@@ -1,9 +1,11 @@
 const router = require("express").Router();
 const { User } = require("../models/user");
-const { Task, validate } = require("../models/task");
+const { Step } = require("../models/step");
+const { Task, validate, validateMultiple } = require("../models/task");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
+const { filteredTasks } = require("../permissions/tasksByPermission");
 
 // Create task
 router.post("/", auth, async (req, res) => {
@@ -18,10 +20,30 @@ router.post("/", auth, async (req, res) => {
   res.status(201).send({ data: task, message: "Task created successfully" });
 });
 
+// Create multiple tasks
+router.post("/prefill", auth, async (req, res) => {
+  console.log("CREATE MULTIPLE TASKS", req.body);
+  const { error } = validateMultiple(req.body);
+  if (error) res.status(400).send({ message: error.details });
+
+  const user = await User.findById(req.user._id);
+  const allTasks = req.body.map((task) => {
+    return { ...task, user: user._id };
+  });
+  const tasks = await Task.insertMany(allTasks);
+
+  res.status(201).send({
+    data: tasks,
+    message: "Multiple prefill tasks created successfully",
+  });
+});
+
 // Get all tasks
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
+  const steps = await Step.find();
   const tasks = await Task.find();
-  res.status(200).send({ data: tasks });
+
+  res.status(200).send({ data: filteredTasks(req, steps, tasks) });
 });
 
 // Update task
@@ -34,7 +56,7 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
   res.send({ data: task, message: "Updated task successfully" });
 });
 
-// Update task
+// Patch task
 router.patch("/:id", [validateObjectId, auth], async (req, res) => {
   console.log("task patch running");
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
@@ -42,7 +64,6 @@ router.patch("/:id", [validateObjectId, auth], async (req, res) => {
   });
   res.send({ data: task, message: "Patched task successfully" });
 });
-
 
 // Delete task by ID
 router.delete("/:id", [validateObjectId, auth], async (req, res) => {

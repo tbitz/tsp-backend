@@ -2,11 +2,13 @@ const router = require("express").Router();
 const { Step } = require("../models/step");
 const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
+const { filteredSteps } = require("../permissions/stepsByPermission");
 
 // get all steps
 router.get("/", auth, async (req, res) => {
   const steps = await Step.find();
-  res.status(200).send({ data: steps });
+
+  res.status(200).send({ data: filteredSteps(req, steps) });
 });
 
 // get step by id

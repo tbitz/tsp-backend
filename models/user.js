@@ -15,11 +15,12 @@ const userSchema = new mongoose.Schema({
   projects: { type: [String], default: [] },
   tasks: { type: [String], default: [] },
   isAdmin: { type: Boolean, default: false },
+  role: { type: String, required: true },
 });
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
-    { _id: this._id, name: this.name, isAdmin: this.isAdmin },
+    { _id: this._id, name: this.name, isAdmin: this.isAdmin, role: this.role },
     process.env.JWTPRIVATEKEY,
     { expiresIn: "7d" }
   );
@@ -34,6 +35,7 @@ const validate = (user) => {
     month: Joi.string().required(),
     date: Joi.string().required(),
     year: Joi.string().required(),
+    role: Joi.string().required(),
     gender: Joi.string().valid("male", "female", "non-binary").required(),
   });
   return schema.validate(user);
