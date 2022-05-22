@@ -6,10 +6,11 @@ const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
 const { filteredTasks } = require("../permissions/tasksByPermission");
+const mongoose = require("mongoose");
 
 // Create task
 router.post("/", auth, async (req, res) => {
-  console.log("create task", req.body);
+  console.log("CREATE TASK", req.body);
   const { error } = validate(req.body);
   if (error) res.status(400).send({ message: error.details[0].message });
 
@@ -38,6 +39,14 @@ router.post("/prefill", auth, async (req, res) => {
   });
 });
 
+// Get tasks by stepId
+/* router.get("/", auth, async (req, res) => {
+  const steps = await Step.find();
+  const tasks = await Task.find();
+
+  res.status(200).send({ data: filteredTasks(req, steps, tasks) });
+}); */
+
 // Get all tasks
 router.get("/", auth, async (req, res) => {
   const steps = await Step.find();
@@ -48,7 +57,7 @@ router.get("/", auth, async (req, res) => {
 
 // Update task
 router.put("/:id", [validateObjectId, auth], async (req, res) => {
-  console.log("task update running");
+  console.log("TASK UPDATE");
 
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -58,11 +67,22 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
 
 // Patch task
 router.patch("/:id", [validateObjectId, auth], async (req, res) => {
-  console.log("task patch running");
+  console.log("TASK PATCH");
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
   res.send({ data: task, message: "Patched task successfully" });
+});
+
+// PatchAndMove task
+router.put("/move/:id", [validateObjectId, auth], async (req, res) => {
+  console.log("TASK PATCH AND MOVE \n", req.params.id, req.body);
+
+  // await Task.findByIdAndDelete(req.params.id);
+
+  // const otherTask = await Task.find({ _id: req.body.otherTaskId });
+
+  res.send({ data: task, message: "Patched and moved task successfully" });
 });
 
 // Delete task by ID

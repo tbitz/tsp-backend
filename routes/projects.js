@@ -44,27 +44,6 @@ router.put("/edit/:id", [validateObjectId, auth], async (req, res) => {
   res.status(200).send({ message: "Updated successfully" });
 });
 
-// add task to project
-router.put("/add-task", auth, async (req, res) => {
-  const schema = Joi.object({
-    projectId: Joi.string().required(),
-    taskId: Joi.string().required(),
-  });
-  const { error } = schema.validate(req.body);
-  if (error) return res.status(400).send({ message: error.details[0].message });
-
-  const user = await User.findById(req.user._id);
-  const project = await Project.findById(req.body.projectId);
-  if (!user._id.equals(project.user))
-    return res.status(403).send({ message: "User don't have access to add!" });
-
-  if (project.tasks.indexOf(req.body.taskId) === -1) {
-    project.tasks.push(req.body.taskId);
-  }
-  await project.save();
-  res.status(200).send({ data: project, message: "Added to project" });
-});
-
 // remove task from project
 router.put("/remove-task", auth, async (req, res) => {
   const schema = Joi.object({

@@ -7,15 +7,11 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  gender: { type: String, required: true },
-  month: { type: String, required: true },
-  date: { type: String, required: true },
-  year: { type: String, required: true },
-  urgentTasks: { type: [String], default: [] },
-  projects: { type: [String], default: [] },
-  tasks: { type: [String], default: [] },
-  isAdmin: { type: Boolean, default: false },
+  phone: { type: String, required: true },
   role: { type: String, required: true },
+  initials: { type: String, required: true },
+  color: { type: String, required: true },
+  projects: { type: [String], required: true, default: [] },
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -29,14 +25,14 @@ userSchema.methods.generateAuthToken = function () {
 
 const validate = (user) => {
   const schema = Joi.object({
-    name: Joi.string().min(5).max(10).required(),
+    name: Joi.string().min(5).max(50).required(),
     email: Joi.string().email().required(),
     password: passwordComplexity().required(),
-    month: Joi.string().required(),
-    date: Joi.string().required(),
-    year: Joi.string().required(),
+    phone: Joi.string().required(),
     role: Joi.string().required(),
-    gender: Joi.string().valid("male", "female", "non-binary").required(),
+    initials: Joi.string().required(),
+    color: Joi.string().required(),
+    projects: Joi.array().items(Joi.string()),
   });
   return schema.validate(user);
 };

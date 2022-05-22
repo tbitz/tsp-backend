@@ -40,27 +40,6 @@ router.put("/edit/:id", [validateObjectId, auth], async (req, res) => {
   res.status(200).send({ message: "Updated successfully" });
 });
 
-// add task to column
-router.put("/add-task", auth, async (req, res) => {
-  const schema = Joi.object({
-    columnId: Joi.string().required(),
-    taskId: Joi.string().required(),
-  });
-  const { error } = schema.validate(req.body);
-  if (error) return res.status(400).send({ message: error.details[0].message });
-
-  const user = await User.findById(req.user._id);
-  const column = await Column.findById(req.body.columnId);
-  if (!user._id.equals(column.user))
-    return res.status(403).send({ message: "User don't have access to add!" });
-
-  if (column.tasks.indexOf(req.body.taskId) === -1) {
-    column.tasks.push(req.body.taskId);
-  }
-  await column.save();
-  res.status(200).send({ data: column, message: "Added to column" });
-});
-
 // remove task from column
 router.put("/remove-task", auth, async (req, res) => {
   const schema = Joi.object({
