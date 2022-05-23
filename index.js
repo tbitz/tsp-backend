@@ -28,5 +28,5 @@ app.use("/api/steps/", stepRoutes);
 app.use("/api/tasks/", taskRoutes);
 app.use("/api/", searchRoutes);
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
