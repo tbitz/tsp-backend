@@ -12,6 +12,7 @@ const labelRoutes = require("./routes/labels");
 const stepRoutes = require("./routes/steps");
 const taskRoutes = require("./routes/tasks");
 const searchRoutes = require("./routes/search");
+const welcomeRoutes = require("./routes/welcome");
 const app = express();
 
 connection();
@@ -27,6 +28,7 @@ app.use("/api/labels/", labelRoutes);
 app.use("/api/steps/", stepRoutes);
 app.use("/api/tasks/", taskRoutes);
 app.use("/api/", searchRoutes);
+app.use("/", welcomeRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
