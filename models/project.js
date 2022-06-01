@@ -8,7 +8,7 @@ const projectSchema = new mongoose.Schema({
   user: { type: ObjectId, ref: "user", required: true },
   description: { type: String },
   kwh: { type: String },
-  img: { type: String },
+  members: { type: [String], required: true, default: [] },
 });
 
 const validate = (project) => {
@@ -17,7 +17,7 @@ const validate = (project) => {
     user: Joi.string().required(),
     description: Joi.string().allow(""),
     kwh: Joi.string().required(),
-    img: Joi.string().allow(""),
+    members: Joi.array().items(Joi.string()),
   });
   return schema.validate(project);
 };
