@@ -77,6 +77,9 @@ router.patch("/:id", [validateObjectId, auth], async (req, res) => {
 // PatchAndMove task
 router.put("/move/:id", [validateObjectId, auth], async (req, res) => {
   console.log("TASK PATCH AND MOVE \n", req.params.id, req.body);
+  const task = await Task.findByIdAndUpdate(req.params.id, req.body.task, {
+    new: true,
+  });
 
   // await Task.findByIdAndDelete(req.params.id);
 

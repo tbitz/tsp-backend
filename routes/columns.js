@@ -19,6 +19,22 @@ router.post("/", auth, async (req, res) => {
   res.status(201).send({ data: column });
 });
 
+// create column
+router.post("/multiple", auth, async (req, res) => {
+  console.log(req.body);
+  const user = await User.findById(req.user._id);
+
+  const allColumns = req.body.map((column) => {
+    return { ...column, user: user._id };
+  });
+  const columns = await Column.insertMany(allColumns);
+
+  res.status(201).send({
+    data: columns,
+    message: "Multiple columns created successfully",
+  });
+});
+
 // edit column by id
 router.put("/edit/:id", [validateObjectId, auth], async (req, res) => {
   const schema = Joi.object({
