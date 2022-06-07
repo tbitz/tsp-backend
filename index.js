@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const connection = require("./db");
 const userRoutes = require("./routes/users");
+const mailRoutes = require("./routes/mail");
 const authRoutes = require("./routes/auth");
 const projectRoutes = require("./routes/projects");
 const boardRoutes = require("./routes/boards");
@@ -19,6 +20,7 @@ connection();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/mail/", mailRoutes);
 app.use("/api/users/", userRoutes);
 app.use("/api/login/", authRoutes);
 app.use("/api/projects/", projectRoutes);
