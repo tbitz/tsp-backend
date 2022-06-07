@@ -6,7 +6,12 @@ module.exports = async () => {
     useUnifiedTopology: true,
   };
   try {
-    await mongoose.connect(process.env.ATLAS_URI, connectionParams);
+    await mongoose.connect(
+      process.env.USE_LOCAL_DB
+        ? process.env.ATLAS_URI
+        : process.env.ATLAS_LIVE_URI,
+      connectionParams
+    );
     console.log("connected to database successfully");
   } catch (error) {
     console.log("could not connect to database.", error);

@@ -7,6 +7,7 @@ const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
 const { filteredTasks } = require("../permissions/tasksByPermission");
 const mongoose = require("mongoose");
+const { Project } = require("../models/project");
 
 // Create task
 router.post("/", auth, async (req, res) => {
@@ -92,6 +93,18 @@ router.put("/move/:id", [validateObjectId, auth], async (req, res) => {
 router.delete("/:id", [validateObjectId, auth], async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
   res.status(200).send({ message: "Task deleted sucessfully" });
+});
+
+// Deletes all tasks and the project
+router.delete("/all/:id", [validateObjectId, auth], async (req, res) => {
+  const tasks = await Task.find();
+  const tasksToDelete = tasks.filter(
+    (task) => task.projectId === req.params.id
+  );
+
+  tasksToDelete.forEach(async (task) => await Task.findByIdAndDelete(task._id));
+  await Project.findByIdAndDelete(req.params.id);
+  res.status(200).send({ message: "Tasks deleted sucessfully" });
 });
 
 // Like task

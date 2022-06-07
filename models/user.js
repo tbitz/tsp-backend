@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
   initials: { type: String, required: true },
   color: { type: String, required: true },
   projects: { type: [String], required: true, default: [] },
+  confirmed: { type: Boolean, default: false },
 });
 
 userSchema.methods.generateAuthToken = function () {

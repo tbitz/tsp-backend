@@ -28,6 +28,7 @@ const taskSchema = new mongoose.Schema({
 const validate = (task) => {
   const schema = Joi.object({
     user: Joi.string().required(),
+    customerId: Joi.string().required(),
     columnId: Joi.string().required(),
     projectId: Joi.string().required(),
     stepId: Joi.string().required(),
@@ -47,6 +48,7 @@ const validate = (task) => {
 const validateMultiple = (tasks) => {
   const schema = Joi.array().items({
     user: Joi.string().required(),
+    customerId: Joi.string().required(),
     columnId: Joi.string().required(),
     projectId: Joi.string().required(),
     stepId: Joi.string().required(),
