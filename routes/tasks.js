@@ -3,10 +3,8 @@ const { User } = require("../models/user");
 const { Step } = require("../models/step");
 const { Task, validate, validateMultiple } = require("../models/task");
 const auth = require("../middleware/auth");
-const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
 const { filteredTasks } = require("../permissions/tasksByPermission");
-const mongoose = require("mongoose");
 const { Project } = require("../models/project");
 
 // Create task

@@ -1,3 +1,5 @@
+const { isAdmin, isProjektleiter } = require("./utils");
+
 /**
  * supported roles: Admin, Monteur, Projektleiter
  * toString is changing ObjectId("id") to "id"
@@ -10,7 +12,7 @@ const filterAllowedSteps = (steps, tasks, allowedSteps) => {
 };
 
 function filteredTasks(req, steps, tasks) {
-  if (req.user.role === "Admin") {
+  if (isAdmin(req) || isProjektleiter(req)) {
     return tasks;
   }
   if (req.user.role === "Verkauf")
@@ -26,14 +28,6 @@ function filteredTasks(req, steps, tasks) {
     ]);
   if (req.user.role === "Lagerist")
     return filterAllowedSteps(steps, tasks, ["Beschaffung"]);
-  if (req.user.role === "Projektleiter")
-    return filterAllowedSteps(steps, tasks, [
-      "Projektstart",
-      "Projektplanung",
-      "Beschaffung",
-      "Letzte Vorbereitungen",
-      "Projektabschluss",
-    ]);
 
   return tasks.filter((task) => filteredStepIds.includes(task.stepId));
 }

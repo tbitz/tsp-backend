@@ -33,8 +33,6 @@ router.post("/", async (req, res) => {
 // get all users
 router.get("/", async (req, res) => {
   const users = await User.find().select("-password -__v");
-  console.log("FETCHING MEMBERS", req.body, users);
-
   res.status(200).send({ data: users });
 });
 

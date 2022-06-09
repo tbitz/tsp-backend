@@ -4,6 +4,9 @@ const { User } = require("../models/user");
 const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 const Joi = require("joi");
+const { Project } = require("../models/project");
+const { filteredCustomers } = require("../permissions/customersByPermission");
+const { filteredProjects } = require("../permissions/projectsByPermission");
 
 // create customer
 router.post("/", auth, async (req, res) => {
@@ -13,6 +16,14 @@ router.post("/", auth, async (req, res) => {
   const customer = await Customer(req.body).save();
 
   res.status(201).send({ data: customer });
+});
+
+// patch customer by id
+router.patch("/:id", [validateObjectId, auth], async (req, res) => {
+  const customer = await Customer.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.send({ data: customer, message: "Patched customer successfully" });
 });
 
 // edit customer by id
@@ -51,8 +62,16 @@ router.get("/:id", [validateObjectId, auth], async (req, res) => {
 
 // get all customers
 router.get("/", auth, async (req, res) => {
+  const projects = await Project.find();
   const customers = await Customer.find();
-  res.status(200).send({ data: customers });
+  const eligibleProjects = await filteredProjects(req, projects);
+  const eligibleCustomerIds = eligibleProjects.map(
+    (project) => project.customerId
+  );
+
+  res
+    .status(200)
+    .send({ data: filteredCustomers(req, customers, eligibleCustomerIds) });
 });
 
 // delete customer by id

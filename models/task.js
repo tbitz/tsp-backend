@@ -23,12 +23,12 @@ const taskSchema = new mongoose.Schema({
   checklist: { type: [Object], default: [] },
   startDate: { type: Date, default: "" },
   endDate: { type: Date, default: "" },
+  focused: { type: String, default: "" },
 });
 
 const validate = (task) => {
   const schema = Joi.object({
     user: Joi.string().required(),
-    customerId: Joi.string().required(),
     columnId: Joi.string().required(),
     projectId: Joi.string().required(),
     stepId: Joi.string().required(),
@@ -41,6 +41,7 @@ const validate = (task) => {
     checklist: Joi.array().items(Joi.object()),
     startDate: Joi.string().required(),
     endDate: Joi.string().allow(""),
+    focused: Joi.string().allow(""),
   });
   return schema.validate(task);
 };
@@ -48,7 +49,6 @@ const validate = (task) => {
 const validateMultiple = (tasks) => {
   const schema = Joi.array().items({
     user: Joi.string().required(),
-    customerId: Joi.string().required(),
     columnId: Joi.string().required(),
     projectId: Joi.string().required(),
     stepId: Joi.string().required(),
@@ -61,6 +61,7 @@ const validateMultiple = (tasks) => {
     checklist: Joi.array().items(Joi.object()),
     startDate: Joi.string().required(),
     endDate: Joi.string().allow(""),
+    focused: Joi.string().allow(""),
   });
   console.log("validateMultiple: ", schema.validate(tasks));
   return schema.validate(tasks);

@@ -5,6 +5,7 @@ const { User } = require("../models/user");
 const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 const Joi = require("joi");
+const { filteredProjects } = require("../permissions/projectsByPermission");
 
 // create project
 router.post("/", auth, async (req, res) => {
@@ -17,6 +18,14 @@ router.post("/", auth, async (req, res) => {
   await user.save();
 
   res.status(201).send({ data: project });
+});
+
+// patch project by id
+router.patch("/:id", [validateObjectId, auth], async (req, res) => {
+  const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.send({ data: project, message: "Patched project successfully" });
 });
 
 // edit project by id
@@ -91,7 +100,7 @@ router.get("/:id", [validateObjectId, auth], async (req, res) => {
 // get all projects
 router.get("/", auth, async (req, res) => {
   const projects = await Project.find();
-  res.status(200).send({ data: projects });
+  res.status(200).send({ data: filteredProjects(req, projects) });
 });
 
 // delete project by id

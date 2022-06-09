@@ -1,5 +1,7 @@
+const { isAdmin, isProjektleiter } = require("./utils");
+
 function filteredSteps(req, steps) {
-  if (req.user.role === "Admin" || req.user.role === "Projektleiter") {
+  if (isAdmin(req) || isProjektleiter(req)) {
     return steps;
   }
   if (req.user.role === "Verkauf") {
