@@ -56,8 +56,6 @@ router.get("/", auth, async (req, res) => {
 
 // Update task
 router.put("/:id", [validateObjectId, auth], async (req, res) => {
-  console.log("TASK UPDATE");
-
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
@@ -66,7 +64,6 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
 
 // Patch task
 router.patch("/:id", [validateObjectId, auth], async (req, res) => {
-  console.log("TASK PATCH");
   const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
