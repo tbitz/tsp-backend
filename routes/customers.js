@@ -74,10 +74,19 @@ router.get("/", auth, async (req, res) => {
     .send({ data: filteredCustomers(req, customers, eligibleCustomerIds) });
 });
 
-// delete customer by id
+// Delete task by ID
 router.delete("/:id", [validateObjectId, auth], async (req, res) => {
+  await Customer.findByIdAndDelete(req.params.id);
+  res.status(200).send({ message: "Customer deleted sucessfully" });
+});
+
+// delete customer by id (ONLY owner of the customer)
+/* router.delete("/:id", [validateObjectId, auth], async (req, res) => {
+  console.log(req);
   const user = await User.findById(req.user._id);
   const customer = await Customer.findById(req.params.id);
+
+  // that's how you could restrict someone else from deleting your projects
   if (!user._id.equals(customer.user))
     return res
       .status(403)
@@ -88,6 +97,6 @@ router.delete("/:id", [validateObjectId, auth], async (req, res) => {
   await user.save();
   await customer.remove();
   res.status(200).send({ message: "Removed from library" });
-});
+}); */
 
 module.exports = router;

@@ -10,6 +10,7 @@ const customerSchema = new mongoose.Schema({
   zip: { type: Number },
   city: { type: String },
   phone: { type: String },
+  done: { type: Boolean, default: false },
 });
 
 const validate = (customer) => {
@@ -20,6 +21,7 @@ const validate = (customer) => {
     zip: Joi.number().required(),
     city: Joi.string().required(),
     phone: Joi.string().required(),
+    done: Joi.boolean().optional(),
   });
   return schema.validate(customer);
 };
