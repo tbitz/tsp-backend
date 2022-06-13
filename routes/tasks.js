@@ -6,6 +6,7 @@ const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 const { filteredTasks } = require("../permissions/tasksByPermission");
 const { Project } = require("../models/project");
+const { filteredProjects } = require("../permissions/projectsByPermission");
 
 // Create task
 router.post("/", auth, async (req, res) => {
@@ -26,6 +27,7 @@ router.post("/prefill", auth, async (req, res) => {
   const { error } = validateMultiple(req.body);
   if (error) res.status(400).send({ message: error.details });
 
+  const steps = await Step.find();
   const user = await User.findById(req.user._id);
   const allTasks = req.body.map((task) => {
     return { ...task, user: user._id };
@@ -33,7 +35,7 @@ router.post("/prefill", auth, async (req, res) => {
   const tasks = await Task.insertMany(allTasks);
 
   res.status(201).send({
-    data: tasks,
+    data: filteredTasks(req, steps, tasks),
     message: "Multiple prefill tasks created successfully",
   });
 });
@@ -50,8 +52,15 @@ router.post("/prefill", auth, async (req, res) => {
 router.get("/", auth, async (req, res) => {
   const steps = await Step.find();
   const tasks = await Task.find();
+  const projects = await Project.find();
+  const eligibleProjectIds = await filteredProjects(req, projects)?.map(
+    (p) => p.id
+  );
+  const tasksByProjects = tasks.filter((task) =>
+    eligibleProjectIds.includes(task.projectId)
+  );
 
-  res.status(200).send({ data: filteredTasks(req, steps, tasks) });
+  res.status(200).send({ data: filteredTasks(req, steps, tasksByProjects) });
 });
 
 // Update task
@@ -72,7 +81,6 @@ router.patch("/:id", [validateObjectId, auth], async (req, res) => {
 
 // PatchAndMove task
 router.put("/move/:id", [validateObjectId, auth], async (req, res) => {
-  console.log("TASK PATCH AND MOVE \n", req.params.id, req.body);
   const task = await Task.findByIdAndUpdate(req.params.id, req.body.task, {
     new: true,
   });
