@@ -78,19 +78,6 @@ router.put("/remove-task", auth, async (req, res) => {
   res.status(200).send({ data: column, message: "Removed from column" });
 });
 
-// user columns
-router.get("/favourite", auth, async (req, res) => {
-  const user = await User.findById(req.user._id);
-  const columns = await Column.find({ _id: user.columns });
-  res.status(200).send({ data: columns });
-});
-
-// get random columns
-router.get("/random", auth, async (req, res) => {
-  const columns = await Column.aggregate([{ $sample: { size: 10 } }]);
-  res.status(200).send({ data: columns });
-});
-
 // get column by id
 router.get("/:id", [validateObjectId, auth], async (req, res) => {
   const column = await Column.findById(req.params.id);
@@ -103,6 +90,7 @@ router.get("/:id", [validateObjectId, auth], async (req, res) => {
 // get all columns
 router.get("/", auth, async (req, res) => {
   const columns = await Column.find();
+  await columns.sort((a, b) => a.index - b.index);
   res.status(200).send({ data: columns });
 });
 
