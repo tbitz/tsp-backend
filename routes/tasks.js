@@ -110,6 +110,46 @@ router.delete("/all/:id", [validateObjectId, auth], async (req, res) => {
   res.status(200).send({ message: "Tasks deleted sucessfully" });
 });
 
+// Deletes all tasks and the project
+router.delete(
+  "/allWhereNotId/:id",
+  [validateObjectId, auth],
+  async (req, res) => {
+    const tasks = await Task.find();
+    const tasksToDelete = tasks.filter(
+      (task) => task.projectId !== req.params.id
+    );
+
+    tasksToDelete.forEach(
+      async (task) => await Task.findByIdAndDelete(task._id)
+    );
+    await Project.findByIdAndDelete(req.params.id);
+    res.status(200).send({ message: "All Tasks deleted sucessfully" });
+  }
+);
+
+// :id = oldProjectId, hardcoded new projectId
+router.patch("/patchAll/:id", [validateObjectId, auth], async (req, res) => {
+  const tasks = await Task.find();
+  const tasksToUpdate = await tasks.filter(
+    (task) => task.projectId === req.params.id
+  );
+
+  tasksToUpdate.forEach(async (task) => {
+    await Task.findByIdAndUpdate(
+      task._id,
+      { projectId: "62ac3fa18f6e9e89729366d9" },
+      {
+        new: true,
+      }
+    );
+  });
+
+  res
+    .status(200)
+    .send({ message: "All Tasks patched with projectId sucessfully" });
+});
+
 // Like task
 router.put("/like/:id", [validateObjectId, auth], async (req, res) => {
   let resMessage = "";

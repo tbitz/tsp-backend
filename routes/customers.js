@@ -76,6 +76,15 @@ router.get("/", auth, async (req, res) => {
 
 // Delete task by ID
 router.delete("/:id", [validateObjectId, auth], async (req, res) => {
+  const projects = await Project.find();
+  if (projects.some((p) => p.customerId === req.params.id)) {
+    res.status(406).send({
+      message:
+        "There is an existing customer connected to that customer. Delete project first.",
+    });
+    return;
+  }
+  
   await Customer.findByIdAndDelete(req.params.id);
   res.status(200).send({ message: "Customer deleted sucessfully" });
 });

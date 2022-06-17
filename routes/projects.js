@@ -107,7 +107,9 @@ router.get("/", auth, async (req, res) => {
 router.delete("/:id", [validateObjectId, auth], async (req, res) => {
   const user = await User.findById(req.user._id);
   const project = await Project.findById(req.params.id);
-  if (!user._id.equals(project.user))
+
+  // only admin or creator can delete a project
+  if (user.role !== "Admin" && !user._id.equals(project.user))
     return res
       .status(403)
       .send({ message: "User don't have access to delete!" });
