@@ -10,7 +10,6 @@ const { filteredProjects } = require("../permissions/projectsByPermission");
 
 // Create task
 router.post("/", auth, async (req, res) => {
-  console.log("CREATE TASK", req.body);
   const { error } = validate(req.body);
   if (error) res.status(400).send({ message: error.details[0].message });
 
@@ -23,7 +22,6 @@ router.post("/", auth, async (req, res) => {
 
 // Create multiple tasks
 router.post("/prefill", auth, async (req, res) => {
-  console.log("CREATE MULTIPLE TASKS", req.body);
   const { error } = validateMultiple(req.body);
   if (error) res.status(400).send({ message: error.details });
 

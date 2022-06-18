@@ -21,7 +21,6 @@ router.post("/", auth, async (req, res) => {
 
 // create column
 router.post("/multiple", auth, async (req, res) => {
-  console.log(req.body);
   const user = await User.findById(req.user._id);
 
   const allColumns = req.body.map((column) => {

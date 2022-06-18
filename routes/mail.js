@@ -12,8 +12,6 @@ router.post("/", async (req, res) => {
   const project = await Project.findById(task.projectId);
   const column = await Column.findById(task.columnId);
 
-  console.log("project", project);
-
   const endDateContent = task?.endDate
     ? `<p>Der Task endet am: ${task.endDate.slice(0, 10)}</p>`
     : "";

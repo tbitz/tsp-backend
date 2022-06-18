@@ -8,8 +8,9 @@ const projectSchema = new mongoose.Schema({
   user: { type: ObjectId, ref: "user", required: true },
   description: { type: String },
   kwp: { type: Number, required: true },
-  members: { type: [String], required: true, default: [] },
   customerId: { type: String, required: true },
+  members: { type: [String], required: true, default: [] },
+  projectLead: { type: String, required: true },
   done: { type: Boolean, default: false },
 });
 
@@ -19,8 +20,9 @@ const validate = (project) => {
     user: Joi.string().required(),
     description: Joi.string().allow(""),
     kwp: Joi.number().required(),
-    members: Joi.array().items(Joi.string()),
     customerId: Joi.string().required(),
+    members: Joi.array().items(Joi.string()),
+    projectLead: Joi.string().required(),
     done: Joi.boolean().optional(),
   });
   return schema.validate(project);

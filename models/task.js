@@ -63,7 +63,6 @@ const validateMultiple = (tasks) => {
     endDate: Joi.string().allow(""),
     focused: Joi.string().allow(""),
   });
-  console.log("validateMultiple: ", schema.validate(tasks));
   return schema.validate(tasks);
 };
 
