@@ -15,6 +15,29 @@ router.post("/", auth, async (req, res) => {
   res.status(201).send({ data: label });
 });
 
+// Patch label
+router.patch("/:id", [validateObjectId, auth], async (req, res) => {
+  const task = await Label.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.send({ data: task, message: "Patched label successfully" });
+});
+
+// create multiple labels
+router.post("/multiple", auth, async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  const allLabels = req.body.map((label) => {
+    return { ...label, user: user._id };
+  });
+  const labels = await Label.insertMany(allLabels);
+
+  res.status(201).send({
+    data: labels,
+    message: "Multiple labels created successfully",
+  });
+});
+
 // edit label by id
 router.put("/edit/:id", [validateObjectId, auth], async (req, res) => {
   const schema = Joi.object({
