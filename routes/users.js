@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
 });
 
 // get all users
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   const users = await User.find().select("-password -__v");
   res.status(200).send({ data: users });
 });

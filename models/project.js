@@ -12,6 +12,7 @@ const projectSchema = new mongoose.Schema({
   members: { type: [String], required: true, default: [] },
   projectLead: { type: String, required: true },
   done: { type: Boolean, default: false },
+  charged: { type: Boolean, default: false },
 });
 
 const validate = (project) => {
@@ -24,6 +25,7 @@ const validate = (project) => {
     members: Joi.array().items(Joi.string()),
     projectLead: Joi.string().required(),
     done: Joi.boolean().optional(),
+    charged: Joi.boolean().optional(),
   });
   return schema.validate(project);
 };

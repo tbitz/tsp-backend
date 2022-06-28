@@ -84,7 +84,7 @@ router.delete("/:id", [validateObjectId, auth], async (req, res) => {
     });
     return;
   }
-  
+
   await Customer.findByIdAndDelete(req.params.id);
   res.status(200).send({ message: "Customer deleted sucessfully" });
 });
