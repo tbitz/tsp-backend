@@ -148,6 +148,32 @@ router.patch("/patchAll/:id", [validateObjectId, auth], async (req, res) => {
     .send({ message: "All Tasks patched with projectId sucessfully" });
 });
 
+// :id = oldProjectId, hardcoded new projectId
+router.patch(
+  "/patchAllSteps/:id",
+  [validateObjectId, auth],
+  async (req, res) => {
+    const tasks = await Task.find();
+    const tasksToUpdate = await tasks.filter(
+      (task) => task.stepId === req.params.id
+    );
+
+    tasksToUpdate.forEach(async (task) => {
+      await Task.findByIdAndUpdate(
+        task._id,
+        { stepId: "62bf1e02265199d192659dbb" },
+        {
+          new: true,
+        }
+      );
+    });
+
+    res
+      .status(200)
+      .send({ message: "All Tasks patched with stepId sucessfully" });
+  }
+);
+
 // Like task
 router.put("/like/:id", [validateObjectId, auth], async (req, res) => {
   let resMessage = "";

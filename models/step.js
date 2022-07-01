@@ -4,6 +4,7 @@ const Joi = require("joi");
 const stepSchema = new mongoose.Schema({
   name: { type: String, required: true },
   step: { type: String, required: true },
+  categoryId: { type: String, required: true },
 });
 
 const Step = mongoose.model("step", stepSchema);
