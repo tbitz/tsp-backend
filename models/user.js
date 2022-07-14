@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   color: { type: String, required: true },
   projects: { type: [String], required: true, default: [] },
   confirmed: { type: Boolean, default: false }, // we set it manually to true
+  popup: { type: Date, required: true, default: new Date() },
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -34,6 +35,7 @@ const validate = (user) => {
     initials: Joi.string().required(),
     color: Joi.string().required(),
     projects: Joi.array().items(Joi.string()),
+    popup: Joi.string().allow(Date.now()),
   });
   return schema.validate(user);
 };
