@@ -1,6 +1,8 @@
 const { isAdmin, isProjektleiter } = require("./utils");
 
 function filteredSteps(req, steps) {
+  steps.sort((a, b) => a.step - b.step);
+
   if (isAdmin(req) || isProjektleiter(req)) {
     return steps;
   }

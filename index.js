@@ -36,5 +36,5 @@ app.use("/api/tasks/", taskRoutes);
 app.use("/api/", searchRoutes);
 app.use("/", welcomeRoutes);
 
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 6000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
