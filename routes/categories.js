@@ -63,11 +63,8 @@ router.delete("/:id", [validateObjectId, auth], async (req, res) => {
       .status(403)
       .send({ message: "User don't have access to delete!" });
 
-  const index = user.categories.indexOf(req.params.id);
-  user.categories.splice(index, 1);
-  await user.save();
   await category.remove();
-  res.status(200).send({ message: "Removed from library" });
+  res.status(200).send({ message: "Removed category" });
 });
 
 module.exports = router;

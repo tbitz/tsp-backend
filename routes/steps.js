@@ -4,6 +4,7 @@ const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 const { filteredSteps } = require("../permissions/stepsByPermission");
 const { User } = require("../models/user");
+const { Category } = require("../models/category");
 
 // get all steps
 router.get("/", auth, async (req, res) => {
@@ -36,6 +37,27 @@ router.post("/multiple", auth, async (req, res) => {
     data: steps,
     message: "Multiple steps created successfully",
   });
+});
+
+// delete category by id
+router.delete("/multiple/:id", [validateObjectId, auth], async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const category = await Category.findById(req.params.id);
+  const steps = await Step.find();
+
+  // only admin or creator can delete a category
+  if (user.role !== "Admin" && !user._id.equals(category.user))
+    return res
+      .status(403)
+      .send({ message: "User don't have access to delete!" });
+
+  steps.forEach(async (step) => {
+    if (step.categoryId === req.params.id) {
+      await step.remove();
+    }
+  });
+
+  res.status(200).send({ message: "Steps gelöscht" });
 });
 
 module.exports = router;
