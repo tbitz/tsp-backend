@@ -30,6 +30,7 @@ const taskSchema = new mongoose.Schema({
   startDate: { type: Date, default: "" },
   endDate: { type: Date, default: "" },
   focused: { type: String, default: "" },
+  focusedTimes: { type: Object, default: {} },
 });
 
 const validate = (task) => {
@@ -49,6 +50,7 @@ const validate = (task) => {
     startDate: Joi.string().required(),
     endDate: Joi.string().allow(""),
     focused: Joi.string().allow(""),
+    focusedTimes: Joi.object().optional(),
   });
   return schema.validate(task);
 };
@@ -70,6 +72,7 @@ const validateMultiple = (tasks) => {
     startDate: Joi.string().required(),
     endDate: Joi.string().allow(""),
     focused: Joi.string().allow(""),
+    focusedTimes: Joi.object().optional(),
   });
   return schema.validate(tasks);
 };
