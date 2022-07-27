@@ -25,7 +25,7 @@ router.get("/:id", [validateObjectId, auth], async (req, res) => {
 });
 
 // create multiple steps
-router.post("/multiple", auth, async (req, res) => {
+router.post("/createMultiple", auth, async (req, res) => {
   const user = await User.findById(req.user._id);
 
   const allSteps = req.body.map((step) => {
@@ -39,25 +39,54 @@ router.post("/multiple", auth, async (req, res) => {
   });
 });
 
-// delete category by id
-router.delete("/multiple/:id", [validateObjectId, auth], async (req, res) => {
-  const user = await User.findById(req.user._id);
-  const category = await Category.findById(req.params.id);
-  const steps = await Step.find();
+// :id = oldProjectId, hardcoded new projectId
+router.patch("/patchAllSteps", auth, async (req, res) => {
+  const steps = req.body;
 
   // only admin or creator can delete a category
-  if (user.role !== "Admin" && !user._id.equals(category.user))
+  if (req.user.role !== "Admin")
     return res
       .status(403)
-      .send({ message: "User don't have access to delete!" });
+      .send({ message: "User doesn't have rights to update steps!" });
 
   steps.forEach(async (step) => {
-    if (step.categoryId === req.params.id) {
-      await step.remove();
-    }
+    await Step.findByIdAndUpdate(
+      step._id,
+      { userIds: step.userIds },
+      {
+        new: true,
+      }
+    );
   });
 
-  res.status(200).send({ message: "Steps gelöscht" });
+  res
+    .status(200)
+    .send({ data: steps, message: "All steps were updated successfully!" });
 });
+
+// delete category by id
+router.delete(
+  "/deleteMultiple/:id",
+  [validateObjectId, auth],
+  async (req, res) => {
+    const user = await User.findById(req.user._id);
+    const category = await Category.findById(req.params.id);
+    const steps = await Step.find();
+
+    // only admin or creator can delete a category
+    if (user.role !== "Admin" && !user._id.equals(category.user))
+      return res
+        .status(403)
+        .send({ message: "User don't have access to delete!" });
+
+    steps.forEach(async (step) => {
+      if (step.categoryId === req.params.id) {
+        await step.remove();
+      }
+    });
+
+    res.status(200).send({ message: "Steps gelöscht" });
+  }
+);
 
 module.exports = router;

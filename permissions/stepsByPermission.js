@@ -3,9 +3,10 @@ const { isAdmin, isProjektleiter } = require("./utils");
 function filteredSteps(req, steps) {
   steps.sort((a, b) => a.step - b.step);
 
-  if (isAdmin(req) || isProjektleiter(req)) {
-    return steps;
-  }
+  return isAdmin(req) || isProjektleiter(req)
+    ? steps
+    : steps.filter((step) => step.userIds.includes(req.user._id));
+
   if (req.user.role === "Verkauf") {
     return steps.filter((step) => ["Projektstart"].includes(step.name));
   }
