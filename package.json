@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.3",
     "nodemailer": "^6.7.5",
-    "nodemon": "2.0.12"
+    "nodemon": "2.0.12",
+    "pdfkit-table": "^0.1.99"
   }
 }

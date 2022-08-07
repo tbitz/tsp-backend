@@ -161,7 +161,7 @@ router.patch(
     tasksToUpdate.forEach(async (task) => {
       await Task.findByIdAndUpdate(
         task._id,
-        { stepId: "62bf1e02265199d192659dbb" },
+        { stepId: "62e130c124bd3062c0319a79" },
         {
           new: true,
         }
