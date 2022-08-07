@@ -19,7 +19,7 @@ function createPDF(
 
   const fullTable = {
     title: "Detailansicht",
-    headers: ["User", "Minuten", "Start", "Ende"],
+    headers: ["User", "Stunden", "Minuten", "Start", "Ende"],
     rows: [...allRecords],
   };
 
@@ -29,13 +29,12 @@ function createPDF(
   doc.fontSize(18).text(`${rangeStart} - ${rangeEnd} (${rangeDays} Tage)`);
 
   doc.moveDown();
-
   doc.table(summaryTable, {
     columnsSize: [200, 100, 100],
   });
-
+  doc.moveDown();
   doc.table(fullTable, {
-    columnsSize: [150, 100, 100, 100],
+    columnsSize: [100, 100, 100, 70, 70],
   });
 
   doc.end();
