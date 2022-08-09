@@ -7,6 +7,7 @@ const validateObjectId = require("../middleware/validateObjectId");
 const { filteredTasks } = require("../permissions/tasksByPermission");
 const { Project } = require("../models/project");
 const { filteredProjects } = require("../permissions/projectsByPermission");
+const { filteredSteps } = require("../permissions/stepsByPermission");
 
 // Create task
 router.post("/", auth, async (req, res) => {
@@ -54,11 +55,15 @@ router.get("/", auth, async (req, res) => {
   const eligibleProjectIds = await filteredProjects(req, projects)?.map(
     (p) => p.id
   );
-  const tasksByProjects = tasks.filter((task) =>
-    eligibleProjectIds.includes(task.projectId)
+  const eligibleStepIds = await filteredSteps(req, steps)?.map((s) => s.id);
+
+  const eligibleTasks = tasks.filter(
+    (task) =>
+      eligibleProjectIds.includes(task.projectId) &&
+      eligibleStepIds.includes(task.stepId)
   );
 
-  res.status(200).send({ data: filteredTasks(req, steps, tasksByProjects) });
+  res.status(200).send({ data: filteredTasks(req, steps, eligibleTasks) });
 });
 
 // Update task
