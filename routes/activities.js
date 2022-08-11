@@ -24,11 +24,25 @@ router.post("/", auth, async (req, res) => {
 });
 
 // patch activities by id
-router.patch("/:id", [validateObjectId, auth], async (req, res) => {
-  const activities = await Activity.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
+router.patch("/patch", auth, async (req, res) => {
+  const newActivities = req.body.activities.map((activity) => {
+    return {
+      ...activity,
+      haveSeen: [...activity.haveSeen, req.body.userId],
+    };
   });
-  res.send({ data: activities, message: "Patched activities successfully" });
+
+  req.body.activities.forEach(async (activity) => {
+    await Activity.findByIdAndUpdate(
+      activity._id,
+      { haveSeen: [...activity.haveSeen, req.body.userId] },
+      {
+        new: true,
+      }
+    );
+  });
+
+  res.send({ data: newActivities, message: "Patched activities successfully" });
 });
 
 // edit activities by id
