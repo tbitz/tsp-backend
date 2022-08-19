@@ -14,6 +14,7 @@ router.post("/generate", auth, async (req, res) => {
     req.body.rangeStart,
     req.body.rangeEnd,
     req.body.rangeDays,
+    req.body.projectName,
 
     (chunk) => stream.write(chunk),
     () => stream.end()

@@ -6,6 +6,8 @@ function createPDF(
   rangeStart,
   rangeEnd,
   rangeDays,
+  projectName,
+
   dataCallback,
   endCallback
 ) {
@@ -26,7 +28,10 @@ function createPDF(
   doc.on("data", dataCallback);
   doc.on("end", endCallback);
   doc.fontSize(25).text("Zeitrapport", 100, 100);
-  doc.fontSize(18).text(`${rangeStart} - ${rangeEnd} (${rangeDays} Tage)`);
+
+  doc
+    .fontSize(18)
+    .text(`${rangeStart} - ${rangeEnd} (${rangeDays} Tage) || ${projectName}`);
 
   doc.moveDown();
   doc.table(summaryTable, {

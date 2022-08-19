@@ -4,7 +4,7 @@ const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 const { filteredSteps } = require("../permissions/stepsByPermission");
 const { User } = require("../models/user");
-const { Category } = require("../models/category");
+const { Process } = require("../models/process");
 
 // get all steps
 router.get("/", auth, async (req, res) => {
@@ -41,9 +41,11 @@ router.post("/createMultiple", auth, async (req, res) => {
 
 // :id = oldProjectId, hardcoded new projectId
 router.patch("/patchAllSteps", auth, async (req, res) => {
+  const user = await User.findById(req.user._id);
+
   const steps = req.body;
 
-  // only admin or creator can delete a category
+  // only admin or creator can delete a process
   if (req.user.role !== "Admin")
     return res
       .status(403)
@@ -64,23 +66,52 @@ router.patch("/patchAllSteps", auth, async (req, res) => {
     .send({ data: steps, message: "All steps were updated successfully!" });
 });
 
-// delete category by id
+// :id = oldProjectId, hardcoded new projectId
+router.patch("/addAdminToAllSteps", auth, async (req, res) => {
+  const steps = await Step.find();
+  const user = req.user;
+
+  if (user.role !== "Admin")
+    return res
+      .status(403)
+      .send({ message: "User doesn't have rights to update steps!" });
+
+  steps.forEach(async (step) => {
+    if (!step.userIds.includes(user._id)) {
+      await Step.findByIdAndUpdate(
+        step._id,
+        { userIds: [...step.userIds, user._id] },
+        {
+          new: true,
+        }
+      );
+    }
+  });
+
+  const newSteps = await Step.find();
+
+  res
+    .status(200)
+    .send({ data: newSteps, message: "All steps were updated successfully!" });
+});
+
+// delete process by id
 router.delete(
   "/deleteMultiple/:id",
   [validateObjectId, auth],
   async (req, res) => {
     const user = await User.findById(req.user._id);
-    const category = await Category.findById(req.params.id);
+    const process = await Process.findById(req.params.id);
     const steps = await Step.find();
 
-    // only admin or creator can delete a category
-    if (user.role !== "Admin" && !user._id.equals(category.user))
+    // only admin or creator can delete a process
+    if (user.role !== "Admin" && !user._id.equals(process.user))
       return res
         .status(403)
         .send({ message: "User don't have access to delete!" });
 
     steps.forEach(async (step) => {
-      if (step.categoryId === req.params.id) {
+      if (step.processId === req.params.id) {
         await step.remove();
       }
     });
