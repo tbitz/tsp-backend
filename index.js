@@ -18,6 +18,7 @@ const stepRoutes = require("./routes/steps");
 const taskRoutes = require("./routes/tasks");
 const searchRoutes = require("./routes/search");
 const welcomeRoutes = require("./routes/welcome");
+const messageRoutes = require("./routes/message");
 const app = express();
 
 connection();
@@ -28,6 +29,7 @@ app.use("/api/mail/", mailRoutes);
 app.use("/api/users/", userRoutes);
 app.use("/api/login/", authRoutes);
 app.use("/api/projects/", projectRoutes);
+app.use("/api/messages/", messageRoutes);
 app.use("/api/pdf/", pdfRoutes);
 app.use("/api/customers/", customerRoutes);
 app.use("/api/activities/", activitiesRoutes);
