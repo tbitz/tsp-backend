@@ -20,6 +20,7 @@ const searchRoutes = require("./routes/search");
 const welcomeRoutes = require("./routes/welcome");
 const messageRoutes = require("./routes/message");
 const app = express();
+const socket = require("socket.io");
 
 connection();
 app.use(cors());
@@ -43,4 +44,30 @@ app.use("/api/", searchRoutes);
 app.use("/", welcomeRoutes);
 
 const port = process.env.PORT || 6000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+const server = app.listen(port, () =>
+  console.log(`Listening on port ${port}...`)
+);
+
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
+
+global.onlineUsers = new Map();
+io.on("connection", (socket) => {
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    // when we log in we sign in the user as online
+    onlineUsers.set(userId, socket.id);
+  });
+
+  socket.on("send-msg", (data) => {
+    const sendUserSocket = onlineUsers.get(data.receiverId);
+    if (sendUserSocket) {
+      // we send the whole data, not just the text
+      socket.to(sendUserSocket).emit("receive-msg", data);
+    }
+  });
+});
