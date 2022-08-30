@@ -11,8 +11,6 @@ router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
-  console.log(req.user);
-
   const user = await User.findById(req.user._id);
   const message = await Message({ ...req.body, user: user._id }).save();
 
