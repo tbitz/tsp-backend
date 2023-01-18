@@ -20,7 +20,7 @@ const searchRoutes = require("./routes/search");
 const welcomeRoutes = require("./routes/welcome");
 const messageRoutes = require("./routes/message");
 const app = express();
-const socket = require("socket.io");
+// const socket = require("socket.io");
 
 connection();
 app.use(cors());
@@ -48,14 +48,14 @@ const server = app.listen(port, () =>
   console.log(`Listening on port ${port}...`)
 );
 
-const io = socket(server, {
+/* const io = socket(server, {
   cors: {
     origin: process.env.FRONTEND,
     credentials: true,
   },
-});
+}); */
 
-global.onlineUsers = new Map();
+/* global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
@@ -71,3 +71,4 @@ io.on("connection", (socket) => {
     }
   });
 });
+ */
